@@ -66,9 +66,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 ---
-# Perfil Docker — ativado automaticamente pelo docker-compose.yml
-# Difere de "prod": usa ddl-auto: update (Hibernate cria/atualiza tabelas)
-# e aponta para o container "db" dentro da rede Docker.
+# Perfil Docker — ativado automaticamente pelo docker-compose.yml.
+# Em Docker/dev, usa ddl-auto: update para permitir que o Hibernate
+# crie/atualize tabelas quando o banco local estiver vazio.
 spring:
   config:
     activate:
@@ -82,7 +82,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -101,3 +101,4 @@ jwt:
 
 seed:
   teste-senha: ${SEED_PASSWORD:senha123}
+
