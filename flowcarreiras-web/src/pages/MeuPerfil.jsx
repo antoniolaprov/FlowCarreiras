@@ -18,6 +18,25 @@ function gradienteParaArea(area) {
   return GRADIENTES[idx]
 }
 
+// Etapas do onboarding (Historia 1.3) — usadas para listar pendencias no painel
+// e permitir retomada direta, sem reiniciar o fluxo completo.
+const ETAPAS_ONBOARDING = [
+  { id: 'area', label: 'Area artistica', chave: 'statusEtapaArea' },
+  { id: 'tags', label: 'O que quer desenvolver', chave: 'statusEtapaTags' },
+  { id: 'cidade', label: 'Localizacao', chave: 'statusEtapaCidade' },
+  { id: 'bio', label: 'Apresentacao (bio)', chave: 'statusEtapaBio' },
+  { id: 'foto', label: 'Foto de perfil', chave: 'statusEtapaFoto' },
+  { id: 'links', label: 'Links externos', chave: 'statusEtapaLinks' },
+]
+
+function calcularEtapasPendentes(perfil) {
+  if (!perfil) return []
+  return ETAPAS_ONBOARDING.filter(e => {
+    const s = perfil[e.chave]
+    return s === 'PENDENTE' || s === 'PULADA'
+  })
+}
+
 function Secao({ titulo, children, editando, onEditar, onSalvar, onCancelar, salvando, podeSalvar = true }) {
   return (
     <div className="bg-card rounded-xl p-5 md:p-6">
@@ -59,6 +78,7 @@ export default function MeuPerfil() {
   const [erroFoto, setErroFoto] = useState(null)
   const [acaoMentoria, setAcaoMentoria] = useState(null)
   const [erroMentoria, setErroMentoria] = useState(null)
+  const [lembreteVisivel, setLembreteVisivel] = useState(false)
 
   // Formulários por seção
   const [formInfo, setFormInfo] = useState({ areaArtisticaPrincipal: '', cidade: '' })
@@ -72,6 +92,11 @@ export default function MeuPerfil() {
       .then(p => {
         setPerfil(p)
         sincronizarForms(p)
+        // Lembrete discreto de etapas pendentes: no maximo 1x por sessao (Historia 1.3)
+        if (calcularEtapasPendentes(p).length > 0 && !sessionStorage.getItem('fc_lembrete_etapas')) {
+          setLembreteVisivel(true)
+          sessionStorage.setItem('fc_lembrete_etapas', '1')
+        }
       })
       .finally(() => setCarregando(false))
   }, [])
@@ -165,6 +190,7 @@ export default function MeuPerfil() {
 
   const gradiente = gradienteParaArea(perfil?.areaArtisticaPrincipal)
   const iniciais = perfil?.nome?.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() || '?'
+  const etapasPendentes = calcularEtapasPendentes(perfil)
 
   return (
     <div className="min-h-screen">
@@ -187,6 +213,22 @@ export default function MeuPerfil() {
       </header>
 
       <main className="max-w-3xl mx-auto px-4 py-6 space-y-4">
+
+        {/* Lembrete discreto de etapas pendentes — nao bloqueia a navegacao (Historia 1.3) */}
+        {lembreteVisivel && etapasPendentes.length > 0 && (
+          <div className="flex items-center justify-between gap-3 bg-brand/10 border border-brand/30 rounded-xl px-4 py-3">
+            <span className="text-sm text-brand-light">
+              Voce tem {etapasPendentes.length} etapa{etapasPendentes.length !== 1 ? 's' : ''} do perfil para completar quando quiser.
+            </span>
+            <button
+              onClick={() => setLembreteVisivel(false)}
+              className="text-gray-400 hover:text-white text-sm shrink-0"
+              aria-label="Dispensar lembrete"
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
         {/* Card principal — banner + avatar + info */}
         <div className="bg-card rounded-xl overflow-hidden">
@@ -293,6 +335,34 @@ export default function MeuPerfil() {
             )}
           </div>
         </div>
+
+        {/* Complete seu perfil — etapas pendentes com retomada direta (Historia 1.3) */}
+        {etapasPendentes.length > 0 && (
+          <div className="bg-card rounded-xl p-5 md:p-6">
+            <div className="mb-3">
+              <h3 className="font-semibold text-white">Complete seu perfil</h3>
+              <p className="text-xs text-gray-500 mt-0.5">
+                {etapasPendentes.length} etapa{etapasPendentes.length !== 1 ? 's' : ''} pendente{etapasPendentes.length !== 1 ? 's' : ''}. Continue de onde parou.
+              </p>
+            </div>
+            <ul className="space-y-2">
+              {etapasPendentes.map(etapa => (
+                <li
+                  key={etapa.id}
+                  className="flex items-center justify-between gap-3 bg-gray-900/40 border border-gray-800 rounded-lg px-3 py-2"
+                >
+                  <span className="text-sm text-gray-300">{etapa.label}</span>
+                  <button
+                    onClick={() => navigate(`/onboarding?etapa=${etapa.id}`)}
+                    className="text-xs text-brand hover:text-brand-light transition-colors shrink-0"
+                  >
+                    Completar →
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Sobre (bio) */}
         <Secao

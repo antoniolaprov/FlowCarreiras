@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import SeletorTags from '../components/SeletorTags'
 import {
@@ -61,6 +61,12 @@ function etapasObrigatoriasConcluidas(status) {
 export default function Onboarding() {
   const { onboardingConcluido, marcarOnboardingConcluido } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+
+  // Retomada de uma etapa especifica a partir do "Complete seu perfil" (Historia 1.3),
+  // sem reiniciar o fluxo completo do onboarding.
+  const etapaParam = searchParams.get('etapa')
+  const modoRetomada = Boolean(etapaParam && ETAPAS.some(e => e.id === etapaParam))
 
   const [etapaAtual, setEtapaAtual] = useState(IDX_BOAS_VINDAS)
   const [status, setStatus] = useState(null)
@@ -77,7 +83,9 @@ export default function Onboarding() {
   const [linksExternos, setLinksExternos] = useState([])
 
   useEffect(() => {
-    if (onboardingConcluido) {
+    // Em modo retomada permitimos o acesso mesmo com onboarding ja concluido,
+    // para preencher uma etapa opcional que foi pulada.
+    if (onboardingConcluido && !modoRetomada) {
       navigate('/oportunidades', { replace: true })
       return
     }
@@ -90,6 +98,11 @@ export default function Onboarding() {
         setTagsSelecionadas(s.tagsNecessidade || [])
         setFotoPreview(s.fotoPerfil || null)
         setLinksExternos(s.linksExternos || [])
+        if (modoRetomada) {
+          const idx = ETAPAS.findIndex(e => e.id === etapaParam)
+          setEtapaAtual(idx + 1)
+          return
+        }
         const inicial = calcularEtapaInicial(s)
         if (inicial > ETAPAS.length && etapasObrigatoriasConcluidas(s)) {
           return concluirOnboarding().then(() => {
@@ -107,7 +120,11 @@ export default function Onboarding() {
     setFeedback(FEEDBACK[etapaId])
     setTimeout(() => {
       setFeedback(null)
-      avancar()
+      if (modoRetomada) {
+        navigate('/meu-perfil', { replace: true })
+      } else {
+        avancar()
+      }
     }, 1500)
   }
 
@@ -121,6 +138,9 @@ export default function Onboarding() {
   }
 
   async function finalizarOnboarding() {
+    if (modoRetomada) {
+      return navigate('/meu-perfil', { replace: true })
+    }
     if (!etapasObrigatoriasConcluidas(status)) {
       return sairAgora()
     }
@@ -210,7 +230,11 @@ export default function Onboarding() {
     try {
       const novo = await pularEtapa(etapaId)
       setStatus(novo)
-      avancar()
+      if (modoRetomada) {
+        navigate('/meu-perfil', { replace: true })
+      } else {
+        avancar()
+      }
     } finally {
       setSalvando(false)
     }
@@ -229,7 +253,17 @@ export default function Onboarding() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
-        {etapaAtual >= 1 && (
+        {modoRetomada ? (
+          <div className="mb-6 flex items-center justify-between">
+            <button
+              onClick={() => navigate('/meu-perfil')}
+              className="text-sm text-gray-400 hover:text-white transition-colors"
+            >
+              ← Voltar ao perfil
+            </button>
+            <span className="text-xs text-gray-500">{progresso}% concluido</span>
+          </div>
+        ) : etapaAtual >= 1 && (
           <div className="mb-6">
             <div className="flex justify-between text-xs text-gray-400 mb-1.5">
               <span>Etapa {etapaAtual} de {ETAPAS.length}</span>
@@ -298,6 +332,7 @@ export default function Onboarding() {
               onPular={null}
               onPularTudo={finalizarOnboarding}
               progresso={progresso}
+              modoRetomada={modoRetomada}
             >
               <input
                 className="input"
@@ -320,6 +355,7 @@ export default function Onboarding() {
               onPular={null}
               onPularTudo={finalizarOnboarding}
               progresso={progresso}
+              modoRetomada={modoRetomada}
             >
               <SeletorTags
                 tagsSelecionadas={tagsSelecionadas}
@@ -344,6 +380,7 @@ export default function Onboarding() {
               onPular={null}
               onPularTudo={finalizarOnboarding}
               progresso={progresso}
+              modoRetomada={modoRetomada}
             >
               <input
                 className="input"
@@ -366,6 +403,7 @@ export default function Onboarding() {
               onPular={() => handlePular('bio')}
               onPularTudo={finalizarOnboarding}
               progresso={progresso}
+              modoRetomada={modoRetomada}
             >
               <textarea
                 className="input resize-none"
@@ -390,6 +428,7 @@ export default function Onboarding() {
               onPular={() => handlePular('foto')}
               onPularTudo={finalizarOnboarding}
               progresso={progresso}
+              modoRetomada={modoRetomada}
             >
               <div className="flex flex-col items-center gap-4">
                 <div className="w-28 h-28 rounded-full overflow-hidden bg-gray-900 border border-gray-800 flex items-center justify-center">
@@ -430,6 +469,7 @@ export default function Onboarding() {
               onPular={() => handlePular('links')}
               onPularTudo={finalizarOnboarding}
               progresso={progresso}
+              modoRetomada={modoRetomada}
               labelSalvar={etapasObrigatoriasConcluidas(status) ? 'Concluir cadastro' : 'Salvar e continuar'}
             >
               <div className="space-y-2">
@@ -468,7 +508,7 @@ export default function Onboarding() {
           )}
         </div>
 
-        {etapaAtual >= 1 && (
+        {!modoRetomada && etapaAtual >= 1 && (
           <div className="flex justify-center gap-2 mt-5">
             {ETAPAS.map((e, i) => {
               const s = status?.[statusKey(e.id)]
@@ -495,7 +535,7 @@ export default function Onboarding() {
   )
 }
 
-function EtapaWrapper({ titulo, descricao, children, salvando, podeSalvar, onSalvar, onPular, onPularTudo, labelSalvar, progresso }) {
+function EtapaWrapper({ titulo, descricao, children, salvando, podeSalvar, onSalvar, onPular, onPularTudo, labelSalvar, progresso, modoRetomada }) {
   return (
     <div>
       <h2 className="text-xl font-semibold mb-1">{titulo}</h2>
@@ -510,7 +550,7 @@ function EtapaWrapper({ titulo, descricao, children, salvando, podeSalvar, onSal
           disabled={salvando || !podeSalvar}
           className="btn-primary w-full py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {salvando ? 'Salvando...' : (labelSalvar || 'Proximo')}
+          {salvando ? 'Salvando...' : (modoRetomada ? 'Salvar' : (labelSalvar || 'Proximo'))}
         </button>
         {onPular && (
           <button
@@ -524,7 +564,7 @@ function EtapaWrapper({ titulo, descricao, children, salvando, podeSalvar, onSal
         )}
       </div>
 
-      {progresso >= LIMIAR_BASICO && (
+      {!modoRetomada && progresso >= LIMIAR_BASICO && (
         <div className="mt-4 pt-4 border-t border-gray-800 text-center">
           <button
             type="button"
