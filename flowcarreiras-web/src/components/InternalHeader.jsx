@@ -53,7 +53,7 @@ const topLinkClass = ({ isActive }) =>
   `rounded-md px-3 py-2 text-sm transition-colors ${isActive ? 'text-white' : 'text-gray-300 hover:text-white'}`
 
 export default function InternalHeader({ rightSlot }) {
-  const { usuario, logout } = useAuth()
+  const { usuario, logout, token } = useAuth()
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
 
@@ -119,13 +119,24 @@ export default function InternalHeader({ rightSlot }) {
         <div className="flex items-center gap-3">
           {rightSlot}
           <div className="hidden items-center gap-3 md:flex">
-            {usuario?.nome && <span className="text-sm text-gray-400">{usuario.nome}</span>}
-            <button
-              onClick={logout}
-              className="flex items-center gap-1.5 rounded-md border border-white/15 px-3 py-1.5 text-sm text-gray-300 transition-colors hover:border-white/40 hover:text-white"
-            >
-              <IconLogOut className="size-4" /> Sair
-            </button>
+            {token ? (
+              <>
+                {usuario?.nome && <span className="text-sm text-gray-400">{usuario.nome}</span>}
+                <button
+                  onClick={logout}
+                  className="flex items-center gap-1.5 rounded-md border border-white/15 px-3 py-1.5 text-sm text-gray-300 transition-colors hover:border-white/40 hover:text-white"
+                >
+                  <IconLogOut className="size-4" /> Sair
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/login"
+                className="flex items-center gap-1.5 rounded-md border border-white/15 px-3 py-1.5 text-sm text-gray-300 transition-colors hover:border-white/40 hover:text-white"
+              >
+                Entrar
+              </Link>
+            )}
           </div>
 
           {/* Botão menu mobile */}
@@ -153,13 +164,25 @@ export default function InternalHeader({ rightSlot }) {
             <DropItem title="Explorar Obras" href="/explorar" description="Descubra outros artistas" Icon={IconCompass} onClick={() => setOpen(false)} />
 
             <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
-              {usuario?.nome && <span className="text-sm text-gray-400">{usuario.nome}</span>}
-              <button
-                onClick={() => { setOpen(false); logout() }}
-                className="flex items-center gap-1.5 rounded-md border border-white/15 px-3 py-1.5 text-sm text-gray-300 hover:border-white/40 hover:text-white"
-              >
-                <IconLogOut className="size-4" /> Sair
-              </button>
+              {token ? (
+                <>
+                  {usuario?.nome && <span className="text-sm text-gray-400">{usuario.nome}</span>}
+                  <button
+                    onClick={() => { setOpen(false); logout() }}
+                    className="flex items-center gap-1.5 rounded-md border border-white/15 px-3 py-1.5 text-sm text-gray-300 hover:border-white/40 hover:text-white"
+                  >
+                    <IconLogOut className="size-4" /> Sair
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/login"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-1.5 rounded-md border border-white/15 px-3 py-1.5 text-sm text-gray-300 hover:border-white/40 hover:text-white"
+                >
+                  Entrar
+                </Link>
+              )}
             </div>
           </div>
         </div>

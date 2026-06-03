@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import api from '../api/client'
 import GridPortfolio from '../components/GridPortfolio'
+import InternalHeader from '../components/InternalHeader'
 import { useAuth } from '../context/AuthContext'
 
 const GRADIENTES = [
@@ -26,7 +27,6 @@ export default function PortfolioPublico() {
   const [erro, setErro] = useState(null)
   const [copiado, setCopiado] = useState(false)
 
-  const temHistorico = window.history.length > 1
   const isProprioPortfolio = usuario?.urlPublica === urlPublica
 
   useEffect(() => {
@@ -50,13 +50,22 @@ export default function PortfolioPublico() {
     setTimeout(() => setCopiado(false), 2000)
   }
 
+  // Sai da visualização pública de volta ao sistema (histórico ou fallback)
+  function voltar() {
+    if (window.history.length > 1) navigate(-1)
+    else navigate('/explorar')
+  }
+
   if (erro) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-center px-4">
-        <div>
-          <p className="text-6xl mb-4">🔍</p>
-          <h1 className="text-2xl font-bold mb-2">Portfólio não encontrado</h1>
-          <p className="text-gray-400">A URL pode estar incorreta ou o artista não existe.</p>
+      <div className="min-h-screen">
+        <InternalHeader />
+        <div className="flex items-center justify-center text-center px-4 py-24">
+          <div>
+            <p className="text-6xl mb-4">🔍</p>
+            <h1 className="text-2xl font-bold mb-2">Portfólio não encontrado</h1>
+            <p className="text-gray-400">A URL pode estar incorreta ou o artista não existe.</p>
+          </div>
         </div>
       </div>
     )
@@ -66,23 +75,15 @@ export default function PortfolioPublico() {
   const fotoUrl = artista?.fotoPerfil ?? null
 
   return (
-    <div className="min-h-screen bg-surface">
-      {/* Navbar minimalista */}
-      <header className="bg-card border-b border-gray-800 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            {temHistorico && (
-              <button
-                onClick={() => navigate(-1)}
-                className="text-gray-400 hover:text-white text-lg"
-                aria-label="Voltar"
-              >
-                ←
+    <div className="min-h-screen">
+      <InternalHeader
+        rightSlot={
+          <div className="flex items-center gap-2">
+            {usuario && (
+              <button onClick={voltar} className="btn-secondary text-xs py-1.5 px-3">
+                ← Voltar
               </button>
             )}
-            <span className="font-bold text-brand text-sm">Flow Carreiras</span>
-          </div>
-          <div className="flex items-center gap-2">
             {isProprioPortfolio && (
               <Link to="/meu-perfil" className="btn-secondary text-xs py-1.5 px-3">
                 Editar perfil
@@ -92,8 +93,8 @@ export default function PortfolioPublico() {
               {copiado ? '✅ Copiado!' : '🔗 Compartilhar'}
             </button>
           </div>
-        </div>
-      </header>
+        }
+      />
 
       {/* Hero card — perfil */}
       <div className="max-w-4xl mx-auto px-4 pt-6">
