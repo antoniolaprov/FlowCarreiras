@@ -12,6 +12,7 @@ import com.flowcarreiras.flowcarreiras_api.model.Tag;
 import com.flowcarreiras.flowcarreiras_api.model.enums.StatusObra;
 import com.flowcarreiras.flowcarreiras_api.model.enums.TipoMidia;
 import com.flowcarreiras.flowcarreiras_api.repository.ObraRepository;
+import com.flowcarreiras.flowcarreiras_api.repository.ComentarioRepository;
 import com.flowcarreiras.flowcarreiras_api.repository.FilaDescobertaLogRepository;
 import com.flowcarreiras.flowcarreiras_api.repository.PerfilArtistaRepository;
 import com.flowcarreiras.flowcarreiras_api.repository.TagRepository;
@@ -42,6 +43,7 @@ public class ObraService {
     private final TagRepository tagRepository;
     private final FileStorageService fileStorageService;
     private final FilaDescobertaLogRepository filaDescobertaLogRepository;
+    private final ComentarioRepository comentarioRepository;
 
     @Transactional
     public ObraResponseDTO criarObra(ObraRequestDTO dto, MultipartFile file, String emailArtista) {
@@ -101,6 +103,7 @@ public class ObraService {
         Obra obra = obraRepository.findByIdAndArtistaId(obraId, perfil.getId())
                 .orElseThrow(() -> new ObraNaoEncontradaException(obraId));
 
+        comentarioRepository.deleteByObraId(obraId);
         fileStorageService.deletar(obra.getUrlMidia());
         obraRepository.delete(obra);
     }

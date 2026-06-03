@@ -1,12 +1,23 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { HeartIcon } from './StateIcons'
+import ComentariosModal from './ComentariosModal'
 
 const ICONES_TIPO = {
   IMAGEM: '🖼️',
   AUDIO: '🎵',
   VIDEO: '🎬',
   EMBED: '▶️',
+}
+
+// Converte uma URL de página do YouTube/Vimeo na URL de player incorporável.
+function urlEmbed(url) {
+  if (!url) return null
+  const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/)
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}`
+  const vimeo = url.match(/vimeo\.com\/(\d+)/)
+  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}`
+  return url
 }
 
 function Thumbnail({ obra }) {
@@ -32,6 +43,43 @@ function Thumbnail({ obra }) {
     )
   }
 
+  if (obra.tipoMidia === 'VIDEO' && obra.urlMidia) {
+    return (
+      <div className="w-full aspect-square bg-black">
+        <video
+          src={obra.urlMidia}
+          controls
+          preload="metadata"
+          className="w-full h-full object-contain"
+        />
+      </div>
+    )
+  }
+
+  if (obra.tipoMidia === 'AUDIO' && obra.urlMidia) {
+    return (
+      <div className="w-full aspect-square bg-card flex flex-col items-center justify-center gap-4 p-4">
+        <span className="text-5xl">🎵</span>
+        <audio src={obra.urlMidia} controls preload="metadata" className="w-full" />
+      </div>
+    )
+  }
+
+  if (obra.tipoMidia === 'EMBED' && obra.urlMidia) {
+    return (
+      <div className="w-full aspect-square bg-black">
+        <iframe
+          src={urlEmbed(obra.urlMidia)}
+          title={obra.titulo}
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="w-full h-full border-0"
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="w-full aspect-square bg-card flex items-center justify-center text-5xl">
       {ICONES_TIPO[obra.tipoMidia] ?? '📁'}
@@ -40,6 +88,7 @@ function Thumbnail({ obra }) {
 }
 
 export default function CardObra({ obra, modoEdicao, onRemover }) {
+  const [comentariosAbertos, setComentariosAbertos] = useState(false)
   const [curtido, setCurtido] = useState(() => {
     try { return JSON.parse(localStorage.getItem('fc_curtidas') || '[]').includes(obra.id) } catch { return false }
   })
@@ -93,6 +142,13 @@ export default function CardObra({ obra, modoEdicao, onRemover }) {
           </div>
         )}
 
+        <button
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setComentariosAbertos(true) }}
+          className="flex items-center gap-1.5 text-xs text-gray-400 transition-colors hover:text-brand-light"
+        >
+          <span>💬</span> Comentários
+        </button>
+
         {modoEdicao && (
           <div className="flex gap-2 pt-1">
             <Link
@@ -110,6 +166,10 @@ export default function CardObra({ obra, modoEdicao, onRemover }) {
           </div>
         )}
       </div>
+
+      {comentariosAbertos && (
+        <ComentariosModal obra={obra} onClose={() => setComentariosAbertos(false)} />
+      )}
     </div>
   )
 }

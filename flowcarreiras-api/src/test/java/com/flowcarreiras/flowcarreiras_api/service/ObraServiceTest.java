@@ -11,6 +11,7 @@ import com.flowcarreiras.flowcarreiras_api.model.Tag;
 import com.flowcarreiras.flowcarreiras_api.model.Usuario;
 import com.flowcarreiras.flowcarreiras_api.model.enums.StatusObra;
 import com.flowcarreiras.flowcarreiras_api.model.enums.TipoMidia;
+import com.flowcarreiras.flowcarreiras_api.repository.ComentarioRepository;
 import com.flowcarreiras.flowcarreiras_api.repository.FilaDescobertaLogRepository;
 import com.flowcarreiras.flowcarreiras_api.repository.ObraRepository;
 import com.flowcarreiras.flowcarreiras_api.repository.PerfilArtistaRepository;
@@ -47,6 +48,7 @@ class ObraServiceTest {
     @Mock private TagRepository tagRepository;
     @Mock private FileStorageService fileStorageService;
     @Mock private FilaDescobertaLogRepository filaDescobertaLogRepository;
+    @Mock private ComentarioRepository comentarioRepository;
 
     @InjectMocks
     private ObraService service;

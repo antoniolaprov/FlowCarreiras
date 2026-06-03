@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/obras/minhas").authenticated()
                 .requestMatchers(HttpMethod.GET, "/api/obras/publico/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/obras/explorar").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/obras/*/comentarios").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/obras/{id}").permitAll()
                 .requestMatchers("/uploads/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
