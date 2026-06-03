@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import InternalHeader from '../components/InternalHeader'
 import { useAuth } from '../context/AuthContext'
 import { listarMentores } from '../api/mentorias'
 
@@ -57,32 +58,7 @@ export default function Mentores() {
 
   return (
     <div className="min-h-screen">
-      <header className="bg-card border-b border-gray-800 sticky top-0 z-20">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button onClick={() => navigate('/portfolio/minhas-obras')} className="text-gray-400 hover:text-white transition-colors">
-              Voltar
-            </button>
-            <span className="font-semibold text-brand">Mentores</span>
-          </div>
-          <nav className="flex items-center gap-4">
-            <Link to="/portfolio/minhas-obras" className="text-sm text-gray-400 hover:text-white">
-              Portfolio
-            </Link>
-            <Link to="/mentoria/artistas" className="text-sm text-gray-400 hover:text-white">
-              Mentoria
-            </Link>
-            <Link to="/mentoria/minhas" className="text-sm text-gray-400 hover:text-white">
-              Minhas
-            </Link>
-            <Link to="/meu-perfil" className="text-sm text-gray-400 hover:text-white">
-              Meu Perfil
-            </Link>
-            <span className="text-sm text-gray-400 hidden sm:block">{usuario?.nome}</span>
-            <button onClick={logout} className="text-xs text-gray-500 hover:text-white">Sair</button>
-          </nav>
-        </div>
-      </header>
+      <InternalHeader />
 
       <main className="max-w-5xl mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import InternalHeader from '../components/InternalHeader'
 import { useAuth } from '../context/AuthContext'
 import { listarMinhasObras, removerObra } from '../api/obras'
 import GridPortfolio from '../components/GridPortfolio'
@@ -44,52 +45,7 @@ export default function MinhasObras() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="bg-card border-b border-gray-800 sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <h1 className="font-bold text-brand">Flow Carreiras</h1>
-          <nav className="flex items-center gap-4">
-            <Link
-              to="/oportunidades"
-              className="text-sm text-gray-400 hover:text-white"
-            >
-              Oportunidades
-            </Link>
-            <Link
-              to="/portfolio/minhas-obras"
-              className="text-sm text-gray-300 hover:text-white font-medium border-b-2 border-brand pb-0.5"
-            >
-              Portfólio
-            </Link>
-            <Link
-              to="/meu-perfil"
-              className="text-sm text-gray-400 hover:text-white"
-            >
-              Meu Perfil
-            </Link>
-            <Link
-              to="/mentores"
-              className="text-sm text-gray-400 hover:text-white"
-            >
-              Mentores
-            </Link>
-            <Link
-              to="/mentoria/artistas"
-              className="text-sm text-gray-400 hover:text-white"
-            >
-              Mentoria
-            </Link>
-            <Link
-              to="/mentoria/minhas"
-              className="text-sm text-gray-400 hover:text-white"
-            >
-              Minhas
-            </Link>
-            <span className="text-gray-600">|</span>
-            <span className="text-sm text-gray-400 hidden sm:block">{usuario?.nome}</span>
-            <button onClick={logout} className="text-xs text-gray-500 hover:text-white">Sair</button>
-          </nav>
-        </div>
-      </header>
+      <InternalHeader />
 
       <main className="max-w-5xl mx-auto px-4 py-6">
         {/* Título + ações */}

@@ -14,6 +14,7 @@ import MinhasMentorias from './pages/MinhasMentorias'
 import PortalOportunidades from './pages/PortalOportunidades'
 import ExplorarObras from './pages/ExplorarObras'
 import NetworkStatus from './components/NetworkStatus'
+import AppBackground from './components/AppBackground'
 
 function RotaProtegida({ children }) {
   const { token } = useAuth()
@@ -24,6 +25,7 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <AppBackground />
         <NetworkStatus />
         <Routes>
           <Route path="/login" element={<Login />} />

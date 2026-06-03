@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import InternalHeader from '../components/InternalHeader'
 import { useAuth } from '../context/AuthContext'
 import { obterMeuPerfil, atualizarPerfil, atualizarFotoPerfil } from '../api/perfil'
 import { ativarMentoria, pausarMentoria } from '../api/mentorias'
@@ -194,23 +195,15 @@ export default function MeuPerfil() {
 
   return (
     <div className="min-h-screen">
-      {/* Header fixo */}
-      <header className="bg-card border-b border-gray-800 sticky top-0 z-20">
-        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button onClick={() => navigate('/portfolio/minhas-obras')} className="text-gray-400 hover:text-white transition-colors">
-              ←
-            </button>
-            <span className="font-semibold text-brand">Meu Perfil</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <a href={`/portfolio/${perfil?.urlPublica}`} target="_blank" rel="noopener noreferrer" className="text-xs text-gray-400 hover:text-brand transition-colors">
+      <InternalHeader
+        rightSlot={
+          perfil?.urlPublica && (
+            <a href={`/portfolio/${perfil.urlPublica}`} target="_blank" rel="noopener noreferrer" className="text-xs text-gray-400 transition-colors hover:text-brand">
               Ver público →
             </a>
-            <button onClick={logout} className="text-xs text-gray-500 hover:text-white">Sair</button>
-          </div>
-        </div>
-      </header>
+          )
+        }
+      />
 
       <main className="max-w-3xl mx-auto px-4 py-6 space-y-4">
 

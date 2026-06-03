@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import InternalHeader from '../components/InternalHeader'
 import SeletorTags from '../components/SeletorTags'
 import CardObra from '../components/CardObra'
 import { explorarObras } from '../api/obras'
@@ -57,22 +58,7 @@ export default function ExplorarObras() {
 
   return (
     <div className="min-h-screen">
-      <header className="bg-card border-b border-gray-800 sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link to="/oportunidades" className="text-sm text-gray-400 hover:text-white">
-              Oportunidades
-            </Link>
-            <span className="text-sm text-gray-300 font-medium border-b-2 border-brand pb-0.5">
-              Explorar
-            </span>
-            <Link to="/login" className="text-sm text-gray-400 hover:text-white">
-              Entrar
-            </Link>
-          </div>
-          <h1 className="font-bold text-brand">Flow Carreiras</h1>
-        </div>
-      </header>
+      <InternalHeader />
 
       <main className="max-w-6xl mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">

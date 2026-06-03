@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { HeartIcon } from './StateIcons'
 
 const ICONES_TIPO = {
   IMAGEM: '🖼️',
@@ -39,9 +40,38 @@ function Thumbnail({ obra }) {
 }
 
 export default function CardObra({ obra, modoEdicao, onRemover }) {
+  const [curtido, setCurtido] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('fc_curtidas') || '[]').includes(obra.id) } catch { return false }
+  })
+
+  function toggleCurtir(e) {
+    e.preventDefault()
+    e.stopPropagation()
+    setCurtido(prev => {
+      const next = !prev
+      try {
+        const set = new Set(JSON.parse(localStorage.getItem('fc_curtidas') || '[]'))
+        next ? set.add(obra.id) : set.delete(obra.id)
+        localStorage.setItem('fc_curtidas', JSON.stringify([...set]))
+      } catch { /* ignora indisponibilidade do storage */ }
+      return next
+    })
+  }
+
   return (
     <div className="card group relative hover:ring-2 hover:ring-brand transition-all">
       <Thumbnail obra={obra} />
+
+      {!modoEdicao && (
+        <button
+          onClick={toggleCurtir}
+          aria-label={curtido ? 'Descurtir' : 'Curtir'}
+          aria-pressed={curtido}
+          className="absolute right-2 top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60"
+        >
+          <HeartIcon filled={curtido} size={20} />
+        </button>
+      )}
 
       {obra.status === 'RASCUNHO' && (
         <span className="absolute top-2 left-2 bg-yellow-600/90 text-xs font-semibold px-2 py-0.5 rounded-full">

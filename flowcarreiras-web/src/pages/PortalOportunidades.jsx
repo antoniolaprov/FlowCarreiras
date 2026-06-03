@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import InternalHeader from '../components/InternalHeader'
+import { BellIcon } from '../components/StateIcons'
 import { useAuth } from '../context/AuthContext'
 import { listarOportunidades } from '../api/oportunidades'
 import { listarNotificacoesOportunidades, marcarNotificacaoOportunidadeLida } from '../api/notificacoes'
@@ -93,70 +95,49 @@ export default function PortalOportunidades() {
 
   return (
     <div className="min-h-screen">
-      <header className="bg-card border-b border-gray-800 sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <h1 className="font-bold text-brand">Flow Carreiras</h1>
-          <nav className="flex items-center gap-4">
-            <Link to="/oportunidades" className="text-sm text-gray-300 hover:text-white font-medium border-b-2 border-brand pb-0.5">
-              Oportunidades
-            </Link>
-            <Link to="/explorar" className="text-sm text-gray-400 hover:text-white">
-              Explorar
-            </Link>
-            <Link to="/portfolio/minhas-obras" className="text-sm text-gray-400 hover:text-white">
-              Portfolio
-            </Link>
-            <Link to="/meu-perfil" className="text-sm text-gray-400 hover:text-white">
-              Meu Perfil
-            </Link>
-            <Link to="/mentores" className="text-sm text-gray-400 hover:text-white">
-              Mentores
-            </Link>
-            <div className="relative">
-              <button
-                onClick={() => setMenuNotificacoes(v => !v)}
-                className="text-gray-400 hover:text-white relative"
-                aria-label="Notificacoes"
-              >
-                🔔
-                {totalNaoLidas > 0 && (
-                  <span className="absolute -top-1 -right-2 bg-brand text-white text-[10px] rounded-full px-1.5 py-0.5">
-                    {totalNaoLidas}
-                  </span>
-                )}
-              </button>
-              {menuNotificacoes && (
-                <div className="absolute right-0 mt-2 w-80 bg-card border border-gray-800 rounded-xl shadow-lg z-20">
-                  <div className="p-3 border-b border-gray-800 flex items-center justify-between">
-                    <span className="text-sm font-semibold">Notificacoes</span>
-                    <button onClick={carregarNotificacoes} className="text-xs text-gray-500 hover:text-white">Atualizar</button>
-                  </div>
-                  <div className="max-h-72 overflow-auto">
-                    {notificacoes.length === 0 ? (
-                      <div className="p-4 text-sm text-gray-500">Sem notificacoes recentes.</div>
-                    ) : (
-                      notificacoes.map(n => (
-                        <button
-                          key={n.id}
-                          onClick={() => abrirNotificacao(n)}
-                          className={`w-full text-left p-3 border-b border-gray-800 hover:bg-gray-900 ${n.lida ? 'text-gray-500' : 'text-white'}`}
-                        >
-                          <div className="text-xs uppercase text-brand mb-1">{n.tipo}</div>
-                          <div className="text-sm font-medium line-clamp-2">{n.titulo}</div>
-                          <div className="text-xs text-gray-500 mt-1">Prazo: {new Date(n.dataEncerramento).toLocaleDateString('pt-BR')}</div>
-                        </button>
-                      ))
-                    )}
-                  </div>
-                </div>
+      <InternalHeader
+        rightSlot={
+          <div className="relative">
+            <button
+              onClick={() => setMenuNotificacoes(v => !v)}
+              className="relative text-gray-400 hover:text-white"
+              aria-label="Notificacoes"
+            >
+              <BellIcon active={totalNaoLidas > 0} className="h-5 w-5" />
+              {totalNaoLidas > 0 && (
+                <span className="absolute -top-1 -right-2 rounded-full bg-brand px-1.5 py-0.5 text-[10px] text-white">
+                  {totalNaoLidas}
+                </span>
               )}
-            </div>
-            <span className="text-gray-600">|</span>
-            <span className="text-sm text-gray-400 hidden sm:block">{usuario?.nome}</span>
-            <button onClick={logout} className="text-xs text-gray-500 hover:text-white">Sair</button>
-          </nav>
-        </div>
-      </header>
+            </button>
+            {menuNotificacoes && (
+              <div className="absolute right-0 mt-2 w-80 rounded-xl border border-gray-800 bg-card shadow-lg z-20">
+                <div className="flex items-center justify-between border-b border-gray-800 p-3">
+                  <span className="text-sm font-semibold">Notificacoes</span>
+                  <button onClick={carregarNotificacoes} className="text-xs text-gray-500 hover:text-white">Atualizar</button>
+                </div>
+                <div className="max-h-72 overflow-auto">
+                  {notificacoes.length === 0 ? (
+                    <div className="p-4 text-sm text-gray-500">Sem notificacoes recentes.</div>
+                  ) : (
+                    notificacoes.map(n => (
+                      <button
+                        key={n.id}
+                        onClick={() => abrirNotificacao(n)}
+                        className={`w-full border-b border-gray-800 p-3 text-left hover:bg-gray-900 ${n.lida ? 'text-gray-500' : 'text-white'}`}
+                      >
+                        <div className="mb-1 text-xs uppercase text-brand">{n.tipo}</div>
+                        <div className="line-clamp-2 text-sm font-medium">{n.titulo}</div>
+                        <div className="mt-1 text-xs text-gray-500">Prazo: {new Date(n.dataEncerramento).toLocaleDateString('pt-BR')}</div>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        }
+      />
 
       <main className="max-w-6xl mx-auto px-4 py-6">
         {!usuario?.onboardingConcluido && (

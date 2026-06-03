@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import InternalHeader from '../components/InternalHeader'
 import { useAuth } from '../context/AuthContext'
 import { encerrarMentoria, listarMinhasMentorias } from '../api/mentorias'
 
@@ -116,29 +117,7 @@ export default function MinhasMentorias() {
 
   return (
     <div className="min-h-screen">
-      <header className="bg-card border-b border-gray-800 sticky top-0 z-20">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button onClick={() => navigate('/portfolio/minhas-obras')} className="text-gray-400 hover:text-white transition-colors">
-              Voltar
-            </button>
-            <span className="font-semibold text-brand">Minhas Mentorias</span>
-          </div>
-          <nav className="flex items-center gap-4">
-            <Link to="/mentores" className="text-sm text-gray-400 hover:text-white">
-              Mentores
-            </Link>
-            <Link to="/mentoria/artistas" className="text-sm text-gray-400 hover:text-white">
-              Artistas
-            </Link>
-            <Link to="/meu-perfil" className="text-sm text-gray-400 hover:text-white">
-              Meu Perfil
-            </Link>
-            <span className="text-sm text-gray-400 hidden sm:block">{usuario?.nome}</span>
-            <button onClick={logout} className="text-xs text-gray-500 hover:text-white">Sair</button>
-          </nav>
-        </div>
-      </header>
+      <InternalHeader />
 
       <main className="max-w-5xl mx-auto px-4 py-6 space-y-8">
         <div>

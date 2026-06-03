@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import InternalHeader from '../components/InternalHeader'
 import SeletorTags from '../components/SeletorTags'
 import { obterConfiguracaoMentoria, salvarConfiguracaoMentoria } from '../api/mentorias'
 
@@ -98,15 +99,7 @@ export default function ConfigurarMentoria() {
 
   return (
     <div className="min-h-screen">
-      <header className="bg-card border-b border-gray-800 sticky top-0 z-20">
-        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
-          <button onClick={() => navigate('/meu-perfil')} className="text-gray-400 hover:text-white transition-colors">
-            Voltar
-          </button>
-          <span className="font-semibold text-brand">Configurar Mentoria</span>
-          <span className="w-12" />
-        </div>
-      </header>
+      <InternalHeader />
 
       <main className="max-w-3xl mx-auto px-4 py-6">
         <form onSubmit={handleSubmit} className="bg-card rounded-xl p-5 md:p-6 space-y-5">

@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import InternalHeader from '../components/InternalHeader'
 import { useAuth } from '../context/AuthContext'
 import { criarObra } from '../api/obras'
 import FormularioUploadObra from '../components/FormularioUploadObra'
@@ -14,12 +15,7 @@ export default function NovaObra() {
 
   return (
     <div className="min-h-screen">
-      <header className="bg-card border-b border-gray-800">
-        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="text-gray-400 hover:text-white text-xl">←</button>
-          <h1 className="font-semibold">Nova obra</h1>
-        </div>
-      </header>
+      <InternalHeader />
 
       <main className="max-w-2xl mx-auto px-4 py-6">
         <FormularioUploadObra onSubmit={handleSubmit} />
