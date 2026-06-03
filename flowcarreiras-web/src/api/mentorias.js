@@ -36,3 +36,9 @@ export const listarMinhasMentorias = () =>
 
 export const encerrarMentoria = (mentoriaId) =>
   apiClient.patch(`/mentorias/${mentoriaId}/encerrar`).then(r => r.data)
+
+export const listarMensagens = (mentoriaId) =>
+  apiClient.get(`/mentorias/${mentoriaId}/mensagens`).then(r => r.data)
+
+export const enviarMensagem = (mentoriaId, conteudo) =>
+  apiClient.post(`/mentorias/${mentoriaId}/mensagens`, { conteudo }).then(r => r.data)

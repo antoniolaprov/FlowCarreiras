@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import InternalHeader from '../components/InternalHeader'
+import ChatMentoriaModal from '../components/ChatMentoriaModal'
 import { useAuth } from '../context/AuthContext'
 import { encerrarMentoria, listarMinhasMentorias } from '../api/mentorias'
 
@@ -40,6 +41,7 @@ export default function MinhasMentorias() {
   const [carregando, setCarregando] = useState(true)
   const [encerrandoId, setEncerrandoId] = useState(null)
   const [erro, setErro] = useState(null)
+  const [chat, setChat] = useState(null)
 
   useEffect(() => {
     listarMinhasMentorias()
@@ -96,6 +98,12 @@ export default function MinhasMentorias() {
                     >
                       Ver portfolio
                     </a>
+                    <button
+                      onClick={() => setChat({ mentoria, pessoa })}
+                      className="btn-secondary text-xs py-1.5 px-3"
+                    >
+                      💬 Conversar
+                    </button>
                     {tipo === 'mentor' && ativa && (
                       <button
                         onClick={() => encerrar(mentoria)}
@@ -152,6 +160,14 @@ export default function MinhasMentorias() {
           </>
         )}
       </main>
+
+      {chat && (
+        <ChatMentoriaModal
+          mentoria={chat.mentoria}
+          pessoa={chat.pessoa}
+          onClose={() => setChat(null)}
+        />
+      )}
     </div>
   )
 }
