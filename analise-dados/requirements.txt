@@ -6,3 +6,5 @@ scikit-learn
 streamlit
 plotly
 openpyxl
+jupyter
+ipykernel

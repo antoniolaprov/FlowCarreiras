@@ -2,8 +2,9 @@
 
 ## Mapa Cultural de Pernambuco
 
-- A extração incorporada usa um recorte dos primeiros 1.000 registros retornados pela API, não os mais de 61 mil agentes cadastrados.
+- A extração incorporada seleciona os primeiros 1.000 perfis individuais que atendem ao critério artístico/criativo documentado, não os mais de 61 mil agentes cadastrados.
 - Como a API pode ordenar por identificador, o recorte não deve ser tratado como amostra aleatória representativa de todo o estado.
+- A API não possui um campo que comprove que a pessoa é artista. O uso de áreas artísticas/criativas declaradas é uma aproximação reproduzível e ainda pode incluir profissionais relacionados ao setor.
 - Os campos selecionados não incluem município, localização ou contato.
 - O preenchimento depende do que cada agente informou na plataforma.
 - Listas de termos podem conter categorias pouco frequentes ou variações de escrita.

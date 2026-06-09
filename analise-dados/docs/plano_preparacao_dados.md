@@ -15,9 +15,9 @@ Cada base possui um fluxo independente de extração e limpeza.
 
 ## Mapa Cultural de Pernambuco
 
-1. Consultar a API com os campos definidos, paginando até atingir 1.000 registros.
-2. Salvar a resposta integral em JSON, preservando metadados da extração.
-3. Validar que a resposta contém uma lista de agentes.
+1. Consultar a API por agentes individuais e paginar até selecionar 1.000 perfis com área artística/criativa declarada.
+2. Salvar os perfis selecionados em JSON, preservando metadados da extração e o critério utilizado.
+3. Validar que a resposta contém uma lista e excluir marcadores evidentes de teste ou administração.
 4. Achatar os objetos `type`, `terms`, `createTimestamp` e `updateTimestamp`.
 5. Converter listas de termos para texto separado por ` | `.
 6. Remover duplicidades apenas pelo campo `id`.

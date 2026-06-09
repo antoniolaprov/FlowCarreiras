@@ -51,9 +51,10 @@ def enriquecer_contempart(dataframe: pd.DataFrame) -> pd.DataFrame:
     seguidores = pd.to_numeric(resultado["follower_count"], errors="coerce")
     likes = pd.to_numeric(resultado["avg_likes"], errors="coerce")
     comentarios = pd.to_numeric(resultado["avg_comments"], errors="coerce")
+    engajamento_calculavel = seguidores.gt(0) & likes.notna() & comentarios.notna()
     resultado["taxa_engajamento"] = np.where(
-        seguidores > 0,
-        ((likes.fillna(0) + comentarios.fillna(0)) / seguidores) * 100,
+        engajamento_calculavel,
+        ((likes + comentarios) / seguidores) * 100,
         np.nan,
     )
 

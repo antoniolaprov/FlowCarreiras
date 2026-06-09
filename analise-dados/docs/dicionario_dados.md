@@ -56,5 +56,5 @@ Arquivo tratado: `data/processed/contempart_artists.csv`
 | `avg_aspect_ratio` | Número | Proporção média entre largura e altura |
 | `possui_instagram` | Booleano derivado | Indica se o identificador do Instagram está preenchido |
 | `possui_website` | Booleano derivado | Indica se o website está preenchido |
-| `taxa_engajamento` | Número derivado | Percentual calculado por `(avg_likes + avg_comments) / follower_count * 100` |
+| `taxa_engajamento` | Número derivado | Percentual calculado por `(avg_likes + avg_comments) / follower_count * 100` somente quando os três valores estão disponíveis e seguidores é maior que zero |
 | `nivel_visibilidade` | Categoria derivada | Faixa baixa, média ou alta baseada nos percentis de seguidores |

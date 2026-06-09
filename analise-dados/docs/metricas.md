@@ -4,7 +4,7 @@
 
 | Métrica | Cálculo |
 | --- | --- |
-| Total de agentes individuais | Contagem de `id` únicos após filtro `type=EQ(1)` |
+| Total de perfis artísticos individuais | Contagem de `id` únicos após filtro `type=EQ(1)` e aplicação do critério artístico/criativo documentado |
 | Preenchimento da descrição | Percentual de `descricao_curta` não vazia |
 | Frequência de áreas | Separação de `termos_areas` por ` | ` e contagem |
 | Frequência de tags | Separação de `termos_tags` por ` | ` e contagem |

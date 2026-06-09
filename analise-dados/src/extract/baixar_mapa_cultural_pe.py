@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlencode
@@ -12,6 +13,71 @@ from urllib.request import Request, urlopen
 
 API_URL = "https://www.mapacultural.pe.gov.br/api/agent/find"
 INDIVIDUAL_TYPE_ID = 1
+ARTISTIC_AREA_TERMS = (
+    "arte",
+    "artesan",
+    "audiovisual",
+    "banda",
+    "bordado",
+    "canto",
+    "carnaval",
+    "cinema",
+    "circo",
+    "contacao de historias",
+    "criacao literaria",
+    "cultura negra",
+    "cultura lgbtqiapn+",
+    "cultura dos povos originarios",
+    "culturas populares",
+    "culturas tradicionais",
+    "danca",
+    "declamacao",
+    "design",
+    "documentario",
+    "escultura",
+    "festas populares",
+    "festejos juninos",
+    "filme",
+    "forro",
+    "fotografia",
+    "frevo",
+    "gastronomia",
+    "lenda",
+    "leitura",
+    "literatura",
+    "livro",
+    "macrame",
+    "moda",
+    "musica",
+    "novela",
+    "orquestra",
+    "pintura",
+    "poesia",
+    "producao audiovisual",
+    "radio",
+    "renda",
+    "rock",
+    "samba",
+    "sapateado",
+    "teatro",
+    "tecelagem",
+    "televisao",
+    "trancagem",
+    "video",
+    "webserie",
+    "xaxado",
+)
+SUSPICIOUS_NAME_TERMS = ("admin", "teste", "test agent", "test user")
+SUSPICIOUS_DESCRIPTION_TERMS = (
+    "agente teste",
+    "apenas teste",
+    "cadastro teste",
+    "pagina teste",
+    "perfil teste",
+    "test agent",
+    "test user",
+)
+SUSPICIOUS_EXACT_DESCRIPTIONS = ("descrever", "test", "teste")
 SELECT_FIELDS = (
     "id,name,shortDescription,type,terms,createTimestamp,updateTimestamp"
 )
@@ -19,7 +85,35 @@ PROJECT_DIR = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT = PROJECT_DIR / "data" / "raw" / "mapa_cultural_pe_agentes.json"
 
 
-def baixar_pagina(page: int, limit: int) -> tuple[list[dict], str]:
+def normalizar_texto(valor: object) -> str:
+    texto = unicodedata.normalize("NFKD", str(valor or ""))
+    return "".join(caractere for caractere in texto if not unicodedata.combining(caractere)).lower()
+
+
+def eh_perfil_artistico(agente: dict) -> bool:
+    tipo = agente.get("type") if isinstance(agente.get("type"), dict) else {}
+    termos = agente.get("terms") if isinstance(agente.get("terms"), dict) else {}
+    areas = termos.get("area") if isinstance(termos.get("area"), list) else []
+    nome = normalizar_texto(agente.get("name"))
+    descricao = normalizar_texto(agente.get("shortDescription")).strip()
+    perfil_suspeito = (
+        any(termo in nome for termo in SUSPICIOUS_NAME_TERMS)
+        or descricao in SUSPICIOUS_EXACT_DESCRIPTIONS
+        or any(termo in descricao for termo in SUSPICIOUS_DESCRIPTION_TERMS)
+    )
+
+    return (
+        tipo.get("id") == INDIVIDUAL_TYPE_ID
+        and not perfil_suspeito
+        and any(
+            termo_artistico in normalizar_texto(area)
+            for area in areas
+            for termo_artistico in ARTISTIC_AREA_TERMS
+        )
+    )
+
+
+def baixar_pagina(page: int, limit: int) -> tuple[list[dict], str, int]:
     params = {
         "@select": SELECT_FIELDS,
         "@limit": limit,
@@ -37,13 +131,7 @@ def baixar_pagina(page: int, limit: int) -> tuple[list[dict], str]:
     if not isinstance(payload, list):
         raise ValueError("Resposta inesperada da API: era esperada uma lista de agentes.")
 
-    individuais = [
-        agente
-        for agente in payload
-        if isinstance(agente.get("type"), dict)
-        and agente["type"].get("id") == INDIVIDUAL_TYPE_ID
-    ]
-    return individuais, url
+    return [agente for agente in payload if eh_perfil_artistico(agente)], url, len(payload)
 
 
 def baixar_dados(
@@ -57,14 +145,15 @@ def baixar_dados(
     pagina = pagina_inicial
 
     while True:
-        pagina_dados, url = baixar_pagina(pagina, limit)
+        pagina_dados, url, total_retornado = baixar_pagina(pagina, limit)
         registros.extend(pagina_dados)
         urls.append(url)
 
-        if total_registros is not None and len(registros) >= total_registros:
-            registros = registros[:total_registros]
+        unicos = {str(registro.get("id")): registro for registro in registros}
+        if total_registros is not None and len(unicos) >= total_registros:
+            registros = list(unicos.values())[:total_registros]
             break
-        if len(pagina_dados) < limit:
+        if total_retornado < limit:
             break
         pagina += 1
 
@@ -104,6 +193,10 @@ def main() -> None:
             "@limit": args.limit,
             "@page": args.page,
             "type": f"EQ({INDIVIDUAL_TYPE_ID})",
+            "criterio_local": (
+                "perfil individual com pelo menos uma area artistica/criativa "
+                "e sem marcadores evidentes de teste ou administracao"
+            ),
             "total_registros": total_registros,
             "todas_paginas": args.todas_paginas,
         },

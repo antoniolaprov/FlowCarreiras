@@ -5,7 +5,7 @@ As análises usam duas fontes abertas e reais. Não há base simulada.
 ## Mapa Cultural de Pernambuco
 
 - Fonte: API pública do Mapa Cultural de Pernambuco.
-- Recurso: agentes culturais.
+- Recurso: agentes culturais individuais com área artística/criativa declarada.
 - Endpoint: `https://www.mapacultural.pe.gov.br/api/agent/find`
 - Consulta utilizada:
 
@@ -22,7 +22,9 @@ total_registros=1000
 - CSV tratado: `data/processed/mapa_cultural_pe_agentes.csv`.
 - CSV enriquecido: `data/processed/mapa_cultural_pe_agentes_enriquecido.csv`.
 
-O JSON guarda os agentes individuais retornados pela API, junto com a URL consultada, o horário da extração e os parâmetros usados. O CSV achata objetos aninhados para facilitar a análise tabular. Agentes coletivos não fazem parte deste recorte porque o FlowCarreiras atualmente é direcionado a perfis individuais.
+O JSON guarda os perfis selecionados, junto com a URL consultada, o horário da extração e os parâmetros usados. O CSV achata objetos aninhados para facilitar a análise tabular.
+
+Como a API não possui um campo direto que confirme se uma pessoa é artista, foi adotado um critério operacional reproduzível: aceitar somente perfis `Individual` que tenham ao menos uma área artística ou criativa declarada e excluir registros com marcadores evidentes de teste ou administração. Esse filtro aproxima o recorte do público do FlowCarreiras, mas não comprova a profissão de cada pessoa.
 
 ## contempArt
 

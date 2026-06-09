@@ -6,7 +6,7 @@ Esta pasta concentra a preparação e a documentação dos dados usados pelo pro
 
 As duas fontes são abertas e reais, mas possuem unidades de análise diferentes:
 
-- **Mapa Cultural de Pernambuco:** agentes culturais retornados pela API pública.
+- **Mapa Cultural de Pernambuco:** recorte de perfis individuais com área artística/criativa declarada, retornados pela API pública.
 - **contempArt:** artistas em início de carreira vinculados a 15 escolas de arte da Alemanha.
 
 Os datasets são complementares para estudar o ecossistema artístico e cultural, mas não são integrados nem unidos por chave.
@@ -34,4 +34,4 @@ python analise-dados/src/cleaning/limpar_contempart.py
 python analise-dados/src/features/criar_variaveis_derivadas.py
 ```
 
-O download padrão do Mapa Cultural pagina a API até obter no máximo 1.000 registros.
+O download padrão do Mapa Cultural pagina a API até obter 1.000 perfis individuais que atendam ao critério artístico documentado em `docs/fontes_dados.md`.
