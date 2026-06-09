@@ -4,7 +4,7 @@ As visualizações das duas bases devem permanecer identificadas e separadas. O 
 
 | Visualização planejada | Uso | Justificativa visual |
 | --- | --- | --- |
-| Gráfico de barras | Comparar áreas, tags, tipos de agentes e escolas com maior frequência | Comprimentos alinhados facilitam a comparação precisa entre categorias. As barras devem ser ordenadas por frequência. |
+| Gráfico de barras | Comparar áreas, tags, funções e escolas com maior frequência | Comprimentos alinhados facilitam a comparação precisa entre categorias. As barras devem ser ordenadas por frequência. |
 | Histograma | Mostrar distribuições de seguidores, posts, imagens, likes, comentários e taxa de engajamento | Permite observar concentração, assimetria, dispersão e valores extremos em variáveis numéricas. |
 | Boxplot | Comparar alcance ou engajamento entre escolas e outros grupos com quantidade suficiente de registros | Resume mediana, dispersão e valores atípicos sem depender apenas da média. |
 | Scatterplot | Investigar relações como posts x seguidores, imagens x seguidores e seguidores x engajamento | Representa duas variáveis numéricas simultaneamente e permite visualizar tendência, concentração e outliers. |

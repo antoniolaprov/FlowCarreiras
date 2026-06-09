@@ -9,8 +9,8 @@ Arquivo tratado: `data/processed/mapa_cultural_pe_agentes.csv`
 | `id` | Inteiro | Identificador único do agente na plataforma |
 | `nome` | Texto | Nome informado pelo agente |
 | `descricao_curta` | Texto | Descrição resumida do agente |
-| `tipo_id` | Inteiro | Identificador do tipo de agente |
-| `tipo_nome` | Texto | Nome do tipo, como Individual ou Coletivo |
+| `tipo_id` | Inteiro | Identificador do tipo de agente; neste recorte, sempre `1` |
+| `tipo_nome` | Texto | Nome do tipo de agente; neste recorte, sempre `Individual` |
 | `termos_tags` | Texto multivalor | Tags associadas ao agente, separadas por ` | ` |
 | `termos_areas` | Texto multivalor | Áreas culturais associadas ao agente |
 | `termos_funcoes` | Texto multivalor | Funções culturais informadas |

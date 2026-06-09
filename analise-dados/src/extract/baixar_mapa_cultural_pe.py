@@ -11,6 +11,7 @@ from urllib.request import Request, urlopen
 
 
 API_URL = "https://www.mapacultural.pe.gov.br/api/agent/find"
+INDIVIDUAL_TYPE_ID = 1
 SELECT_FIELDS = (
     "id,name,shortDescription,type,terms,createTimestamp,updateTimestamp"
 )
@@ -23,6 +24,7 @@ def baixar_pagina(page: int, limit: int) -> tuple[list[dict], str]:
         "@select": SELECT_FIELDS,
         "@limit": limit,
         "@page": page,
+        "type": f"EQ({INDIVIDUAL_TYPE_ID})",
     }
     url = f"{API_URL}?{urlencode(params)}"
     request = Request(url, headers={"User-Agent": "FlowCarreiras-AnaliseDados/1.0"})
@@ -35,7 +37,13 @@ def baixar_pagina(page: int, limit: int) -> tuple[list[dict], str]:
     if not isinstance(payload, list):
         raise ValueError("Resposta inesperada da API: era esperada uma lista de agentes.")
 
-    return payload, url
+    individuais = [
+        agente
+        for agente in payload
+        if isinstance(agente.get("type"), dict)
+        and agente["type"].get("id") == INDIVIDUAL_TYPE_ID
+    ]
+    return individuais, url
 
 
 def baixar_dados(
@@ -95,6 +103,7 @@ def main() -> None:
             "@select": SELECT_FIELDS,
             "@limit": args.limit,
             "@page": args.page,
+            "type": f"EQ({INDIVIDUAL_TYPE_ID})",
             "total_registros": total_registros,
             "todas_paginas": args.todas_paginas,
         },

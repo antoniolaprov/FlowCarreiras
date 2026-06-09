@@ -4,24 +4,23 @@ As perguntas são respondidas separadamente em cada dataset. Não haverá junç�
 
 ## Objetivos da comunicação visual
 
-1. Evidenciar a diversidade de áreas, tags e perfis presentes no ecossistema cultural de Pernambuco.
-2. Mostrar como os agentes culturais cadastrados se distribuem por tipo e ao longo do tempo.
+1. Evidenciar a diversidade de áreas, tags e perfis entre agentes culturais individuais de Pernambuco.
+2. Mostrar como os agentes culturais individuais cadastrados se distribuem ao longo do tempo.
 3. Demonstrar como produção digital, presença online, alcance e engajamento se distribuem entre artistas emergentes do contempArt.
 4. Tornar visíveis concentrações, desigualdades, padrões e valores atípicos sem sugerir comparação direta entre as duas bases.
 5. Comunicar os resultados de forma acessível, indicando claramente a fonte, o universo analisado e os dados ausentes em cada visualização.
 
 ## Mapa Cultural de Pernambuco
 
-Unidade de análise: um agente cultural retornado pela API.
+Unidade de análise: um agente cultural individual retornado pela API.
 
 Perguntas:
 
-1. Quantos agentes são individuais e quantos são coletivos?
-2. Quais áreas culturais aparecem com maior frequência?
-3. Quais tags e funções são mais recorrentes?
-4. Qual é o percentual de agentes com descrição curta preenchida?
-5. Como os registros se distribuem por ano de criação?
-6. Quantos registros foram atualizados após a data de criação?
+1. Quais áreas culturais aparecem com maior frequência?
+2. Quais tags e funções são mais recorrentes?
+3. Qual é o percentual de agentes individuais com descrição curta preenchida?
+4. Como os registros se distribuem por ano de criação?
+5. Quantos registros foram atualizados após a data de criação?
 
 ## contempArt
 

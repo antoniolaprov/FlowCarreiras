@@ -10,6 +10,7 @@ import pandas as pd
 
 
 PROJECT_DIR = Path(__file__).resolve().parents[2]
+INDIVIDUAL_TYPE_ID = 1
 DEFAULT_INPUT = PROJECT_DIR / "data" / "raw" / "mapa_cultural_pe_agentes.json"
 DEFAULT_OUTPUT = PROJECT_DIR / "data" / "processed" / "mapa_cultural_pe_agentes.csv"
 
@@ -67,6 +68,7 @@ def main() -> None:
         raise ValueError("O JSON deve conter uma lista em 'dados'.")
 
     dataframe = pd.DataFrame(achatar_agente(agente) for agente in dados)
+    dataframe = dataframe[dataframe["tipo_id"] == INDIVIDUAL_TYPE_ID]
     dataframe = dataframe.drop_duplicates(subset=["id"], keep="last")
     dataframe = dataframe.sort_values("id", kind="stable").reset_index(drop=True)
 
