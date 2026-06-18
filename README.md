@@ -2,7 +2,7 @@
 
 O Flow Carreiras é uma plataforma desenvolvida para impulsionar a carreira de novos artistas de Recife, conectando-os a mentores, oportunidades de mercado e fornecendo uma infraestrutura analítica robusta para entender engajamento, perfis profissionais e otimização de descoberta de talentos.
 
-## Demonstracao em producao
+## Demonstracao em produção
 
 A aplicação web (Frontend) está buildada e disponível publicamente:
 
