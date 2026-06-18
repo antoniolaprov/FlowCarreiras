@@ -1,0 +1,19 @@
+# Configuração para rodar embutido (iframe) atrás do Nginx em /dashboard
+[server]
+headless = true
+address = "0.0.0.0"
+port = 8501
+baseUrlPath = "dashboard"
+enableCORS = false
+enableXsrfProtection = false
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+base = "dark"
+primaryColor = "#7c3aed"
+backgroundColor = "#0b0b0f"
+secondaryBackgroundColor = "#16161d"
+textColor = "#e5e7eb"
+font = "sans serif"

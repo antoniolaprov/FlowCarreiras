@@ -22,6 +22,10 @@ export default defineConfig({
         ]
       },
       workbox: {
+        // Não devolver o index.html do SPA para estas rotas: elas são servidas
+        // pelo backend/Streamlit (senão o service worker "sequestra" o /dashboard
+        // dentro do iframe e mostra o app React em vez do dashboard).
+        navigateFallbackDenylist: [/^\/dashboard/, /^\/api/, /^\/uploads/],
         // Network-first para obras (dados frescos quando online)
         runtimeCaching: [
           {

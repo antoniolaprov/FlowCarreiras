@@ -13,6 +13,8 @@ import Mentores from './pages/Mentores'
 import MinhasMentorias from './pages/MinhasMentorias'
 import PortalOportunidades from './pages/PortalOportunidades'
 import ExplorarObras from './pages/ExplorarObras'
+import MetricasPerfil from './pages/MetricasPerfil'
+import MetricasGlobais from './pages/MetricasGlobais'
 import NetworkStatus from './components/NetworkStatus'
 import AppBackground from './components/AppBackground'
 
@@ -61,6 +63,12 @@ export default function App() {
             <RotaProtegida><PortalOportunidades /></RotaProtegida>
           } />
           <Route path="/explorar" element={<ExplorarObras />} />
+          <Route path="/metricas" element={
+            <RotaProtegida><MetricasPerfil /></RotaProtegida>
+          } />
+          <Route path="/metricas-globais" element={
+            <RotaProtegida><MetricasGlobais /></RotaProtegida>
+          } />
           <Route path="/" element={<Navigate to="/oportunidades" replace />} />
         </Routes>
       </BrowserRouter>

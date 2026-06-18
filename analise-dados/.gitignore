@@ -1,9 +1,0 @@
-__pycache__/
-.ipynb_checkpoints/
-.env
-*.pkl
-*.joblib
-!models/regressao/regressao_posts_seguidores.joblib
-!models/classificacao/classificador_nivel_visibilidade.joblib
-*.pyc
-venv/

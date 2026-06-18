@@ -1,1 +1,0 @@
-"""Funcoes auxiliares reutilizaveis."""

@@ -57,6 +57,28 @@ services:
       - flowcarreiras-net
 
   # ============================================================
+  # Dashboard — Streamlit (métricas do perfil), lê o Postgres direto
+  # ============================================================
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB:-flowcarreiras}
+      DB_USER: ${POSTGRES_USER:-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      # Mesmo segredo do backend — usado para validar o JWT do usuário logado
+      JWT_SECRET: ${JWT_SECRET:-Zmxvd2NhcnJlaXJhcy1zZWNyZXQta2V5LWZvci1qd3QtdG9rZW5zLTI1NmJpdA==}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - flowcarreiras-net
+
+  # ============================================================
   # Frontend — React/Vite via Nginx
   # ============================================================
   frontend:
@@ -68,6 +90,8 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+      dashboard:
+        condition: service_started
     restart: unless-stopped
     networks:
       - flowcarreiras-net

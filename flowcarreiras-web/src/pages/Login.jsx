@@ -360,7 +360,7 @@ export default function Login() {
                 </form>
 
                 <p className="relative mt-4 text-center text-xs text-white/40">
-                  Teste: marina@test.com / senha123
+                  Teste: tiago@test.com / senha123
                 </p>
               </div>
             </div>

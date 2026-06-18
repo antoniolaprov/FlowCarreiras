@@ -2,100 +2,23 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { HeartIcon } from './StateIcons'
 import ComentariosModal from './ComentariosModal'
+import MidiaObra from './MidiaObra'
+import ObraDetalheModal from './ObraDetalheModal'
 import { useAuth } from '../context/AuthContext'
 import { obterStatusCurtida, curtir, descurtir } from '../api/curtidas'
-
-const ICONES_TIPO = {
-  IMAGEM: '🖼️',
-  AUDIO: '🎵',
-  VIDEO: '🎬',
-  EMBED: '▶️',
-}
-
-// Converte uma URL de página do YouTube/Vimeo na URL de player incorporável.
-function urlEmbed(url) {
-  if (!url) return null
-  const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/)
-  if (yt) return `https://www.youtube.com/embed/${yt[1]}`
-  const vimeo = url.match(/vimeo\.com\/(\d+)/)
-  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}`
-  return url
-}
-
-function Thumbnail({ obra }) {
-  const [carregou, setCarregou] = useState(false)
-  const [erro, setErro] = useState(false)
-
-  if (obra.tipoMidia === 'IMAGEM' && obra.urlMidia) {
-    return (
-      <div className="relative w-full aspect-square bg-card">
-        {!carregou && <div className="skeleton absolute inset-0" />}
-        <img
-          src={obra.urlMidia}
-          alt={obra.titulo}
-          loading="lazy"
-          onLoad={() => setCarregou(true)}
-          onError={() => { setErro(true); setCarregou(true) }}
-          className={`w-full h-full object-cover transition-opacity duration-300 ${carregou ? 'opacity-100' : 'opacity-0'}`}
-        />
-        {erro && (
-          <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-4xl">🖼️</div>
-        )}
-      </div>
-    )
-  }
-
-  if (obra.tipoMidia === 'VIDEO' && obra.urlMidia) {
-    return (
-      <div className="w-full aspect-square bg-black">
-        <video
-          src={obra.urlMidia}
-          controls
-          preload="metadata"
-          className="w-full h-full object-contain"
-        />
-      </div>
-    )
-  }
-
-  if (obra.tipoMidia === 'AUDIO' && obra.urlMidia) {
-    return (
-      <div className="w-full aspect-square bg-card flex flex-col items-center justify-center gap-4 p-4">
-        <span className="text-5xl">🎵</span>
-        <audio src={obra.urlMidia} controls preload="metadata" className="w-full" />
-      </div>
-    )
-  }
-
-  if (obra.tipoMidia === 'EMBED' && obra.urlMidia) {
-    return (
-      <div className="w-full aspect-square bg-black">
-        <iframe
-          src={urlEmbed(obra.urlMidia)}
-          title={obra.titulo}
-          loading="lazy"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="w-full h-full border-0"
-        />
-      </div>
-    )
-  }
-
-  return (
-    <div className="w-full aspect-square bg-card flex items-center justify-center text-5xl">
-      {ICONES_TIPO[obra.tipoMidia] ?? '📁'}
-    </div>
-  )
-}
 
 export default function CardObra({ obra, modoEdicao, onRemover }) {
   const { token } = useAuth()
   const navigate = useNavigate()
   const [comentariosAbertos, setComentariosAbertos] = useState(false)
+  const [detalheAberto, setDetalheAberto] = useState(false)
   const [curtido, setCurtido] = useState(false)
   const [totalCurtidas, setTotalCurtidas] = useState(0)
   const [enviandoCurtida, setEnviandoCurtida] = useState(false)
+
+  // Mídia interativa (vídeo/áudio/embed) não abre o modal ao clicar, para não
+  // conflitar com os controles do player — esses usam o botão "Ampliar".
+  const midiaInterativa = ['VIDEO', 'AUDIO', 'EMBED'].includes(obra.tipoMidia)
 
   // Carrega o estado real de curtidas (contagem + se o usuário logado curtiu)
   useEffect(() => {
@@ -111,8 +34,8 @@ export default function CardObra({ obra, modoEdicao, onRemover }) {
   }, [obra.id])
 
   async function toggleCurtir(e) {
-    e.preventDefault()
-    e.stopPropagation()
+    e?.preventDefault()
+    e?.stopPropagation()
 
     // Sem login não há como persistir a curtida — leva ao login
     if (!token) {
@@ -141,7 +64,13 @@ export default function CardObra({ obra, modoEdicao, onRemover }) {
 
   return (
     <div className="card group relative hover:ring-2 hover:ring-brand transition-all">
-      <Thumbnail obra={obra} />
+      {/* Mídia — abre o detalhe ao clicar (exceto players interativos) */}
+      <div
+        className={midiaInterativa ? '' : 'cursor-zoom-in'}
+        onClick={midiaInterativa ? undefined : () => setDetalheAberto(true)}
+      >
+        <MidiaObra obra={obra} />
+      </div>
 
       {!modoEdicao && (
         <button
@@ -165,7 +94,12 @@ export default function CardObra({ obra, modoEdicao, onRemover }) {
       )}
 
       <div className="p-3 space-y-2">
-        <h3 className="font-semibold text-sm leading-tight line-clamp-1">{obra.titulo}</h3>
+        <h3
+          onClick={() => setDetalheAberto(true)}
+          className="font-semibold text-sm leading-tight line-clamp-1 cursor-pointer hover:text-brand-light"
+        >
+          {obra.titulo}
+        </h3>
 
         {obra.tags?.length > 0 && (
           <div className="flex flex-wrap gap-1">
@@ -178,12 +112,20 @@ export default function CardObra({ obra, modoEdicao, onRemover }) {
           </div>
         )}
 
-        <button
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setComentariosAbertos(true) }}
-          className="flex items-center gap-1.5 text-xs text-gray-400 transition-colors hover:text-brand-light"
-        >
-          <span>💬</span> Comentários
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setDetalheAberto(true)}
+            className="flex items-center gap-1.5 text-xs text-gray-400 transition-colors hover:text-brand-light"
+          >
+            <span>⤢</span> Ampliar
+          </button>
+          <button
+            onClick={() => setComentariosAbertos(true)}
+            className="flex items-center gap-1.5 text-xs text-gray-400 transition-colors hover:text-brand-light"
+          >
+            <span>💬</span> Comentários
+          </button>
+        </div>
 
         {modoEdicao && (
           <div className="flex gap-2 pt-1">
@@ -202,6 +144,17 @@ export default function CardObra({ obra, modoEdicao, onRemover }) {
           </div>
         )}
       </div>
+
+      {detalheAberto && (
+        <ObraDetalheModal
+          obra={obra}
+          curtido={curtido}
+          totalCurtidas={totalCurtidas}
+          enviandoCurtida={enviandoCurtida}
+          onCurtir={toggleCurtir}
+          onClose={() => setDetalheAberto(false)}
+        />
+      )}
 
       {comentariosAbertos && (
         <ComentariosModal obra={obra} onClose={() => setComentariosAbertos(false)} />

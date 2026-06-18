@@ -13,6 +13,7 @@ const IconClipboard = (p) => (<svg {...sv} {...p}><rect x="8" y="2" width="8" he
 const IconSettings = (p) => (<svg {...sv} {...p}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>)
 const IconBriefcase = (p) => (<svg {...sv} {...p}><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>)
 const IconCompass = (p) => (<svg {...sv} {...p}><circle cx="12" cy="12" r="10" /><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" /></svg>)
+const IconChart = (p) => (<svg {...sv} {...p}><line x1="12" y1="20" x2="12" y2="10" /><line x1="18" y1="20" x2="18" y2="4" /><line x1="6" y1="20" x2="6" y2="16" /></svg>)
 const IconChevron = (p) => (<svg {...sv} {...p}><path d="m6 9 6 6 6-6" /></svg>)
 const IconMenu = (p) => (<svg {...sv} {...p}><path d="M4 6h16M4 12h16M4 18h16" /></svg>)
 const IconX = (p) => (<svg {...sv} {...p}><path d="M6 18 18 6M6 6l12 12" /></svg>)
@@ -112,6 +113,8 @@ export default function InternalHeader({ rightSlot }) {
 
             <li><NavLink to="/oportunidades" className={topLinkClass}>Oportunidades</NavLink></li>
             <li><NavLink to="/explorar" className={topLinkClass}>Explorar</NavLink></li>
+            {token && <li><NavLink to="/metricas" className={topLinkClass}>Métricas</NavLink></li>}
+            {token && <li><NavLink to="/metricas-globais" className={topLinkClass}>Métricas Globais</NavLink></li>}
           </ul>
         </div>
 
@@ -162,6 +165,8 @@ export default function InternalHeader({ rightSlot }) {
             <span className="px-2 pt-4 text-xs uppercase tracking-wide text-white/40">Navegar</span>
             <DropItem title="Oportunidades" href="/oportunidades" description="Editais, vagas e chamadas" Icon={IconBriefcase} onClick={() => setOpen(false)} />
             <DropItem title="Explorar Obras" href="/explorar" description="Descubra outros artistas" Icon={IconCompass} onClick={() => setOpen(false)} />
+            {token && <DropItem title="Métricas" href="/metricas" description="Painel de métricas do seu perfil" Icon={IconChart} onClick={() => setOpen(false)} />}
+            {token && <DropItem title="Métricas Globais" href="/metricas-globais" description="Painel analítico agregado" Icon={IconChart} onClick={() => setOpen(false)} />}
 
             <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
               {token ? (
