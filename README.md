@@ -9,6 +9,7 @@ O Flow Carreiras é uma plataforma desenvolvida para impulsionar a carreira de n
 A aplicação web (Frontend) está buildada e disponível publicamente:
 
 * Link do deploy: https://flowcarreiras.vercel.app
+* RECADO AO AVALIADOR: CASO NAO CONSIGA LOGAR NA CONTA TESTE, ASSSISTA AO SCREENCAST DISPONIBILIZADO ABAIXO.
 
 ---
 
